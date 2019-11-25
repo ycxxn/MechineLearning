@@ -80,21 +80,73 @@ class CGSSearch:
         print("-----Phase2-----")
         print(self.Phase2(interval_))
 
-func = test.TestLineFun1
-
-CGS = CGSSearch(func)
-CGS.set_eps(0.3)
-CGS.RunSearch()
-
 class CFiSearch(CGSSearch):
-    def __init__(self, costfun, x = 0, d = 1, eps = 0.01):
+    def __init__(self, costfun, x = 0, d = 0, eps = 0.01):
         super(CFiSearch, self).__init__(costfun, x, d, eps)
-    # def Phase2(self):
+        self.__eps = eps
 
+    def set_eps(self, eps):
+        self.__eps = eps
+        
+    def fib(self,x):
+        if x == 1:
+            return 1
+        if x == 2:
+            return 2
+        if x > 2:
+            return self.fib(x-1)+self.fib(x-2)
+        
+    def Phase2(self,interval_):
+        fib = self.fib
+        n = 1
+        
+        while fib(n+1) <= 2*(1+2*self.__eps)/0.3:
+            n+=1
+            
+        while(1):
+            a = interval_[0]
+            b = interval_[1]
+            interval = b - a
+
+            if n == 1:
+                print(self.__eps)
+                rho = 0.5 - 0.05
+                x1 = a + rho * interval
+                x2 = a + ((1-rho) * interval)
+                # print(x1,x2)
+                print(func(x1),func(x2))   
+                if func(x1) < func(x2):
+                    interval_ = [a,x2]  
+                if func(x1) > func(x2):
+                    interval_ = [x1,b]
+
+                val = (interval_[1]+interval_[0])/2
+                return (val, func(val))
+
+            else:
+                rho = 1 - fib(n)/fib(n+1)
+                x1 = a + rho * interval
+                x2 = a + ((1-rho) * interval)
+                # print(x1,x2)
+                print(func(x1),func(x2))   
+                if func(x1) < func(x2):
+                    interval_ = [a,x2]  
+
+                if func(x1) > func(x2):
+                    interval_ = [x1,b] 
+            
+            n-=1
+
+        
     def RunSearch(self):
         interval_ = self.Phase1()
         print("Interval : ({},{}), Iteration : {}".format(interval_[0], interval_[1], interval_[2]))
+        print(self.Phase2(interval_))
 
+func = test.TestLineFun1
+# CGS = CGSSearch(func)
+# CGS.set_eps(0.3)
+# CGS.RunSearch()
 CFi = CFiSearch(func)
-CFi.set_eps(0.3)
+CFi.set_eps(0.05)
 CFi.RunSearch()
