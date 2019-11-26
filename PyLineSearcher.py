@@ -82,8 +82,20 @@ class CGSSearch:
 
 class CFiSearch(CGSSearch):
     def __init__(self, costfun, x = 0, d = 0, eps = 0.01):
-        super(CFiSearch, self).__init__(costfun, x, d, eps)
+        super(CFiSearch, self).__init__(costfun)
+        # self.__costfun = costfun
+        # self.__x = x 
+        # self.__d = d
         self.__eps = eps
+    
+    def set_costfun(self, costfun):
+        self.__costfun = costfun
+        
+    def set_x(self, x):
+        self.__x = x
+
+    def set_d(self, d):
+        self.__d = d
 
     def set_eps(self, eps):
         self.__eps = eps
@@ -99,7 +111,7 @@ class CFiSearch(CGSSearch):
     def Phase2(self,interval_):
         fib = self.fib
         n = 1
-        
+        # print(self.__eps)
         while fib(n+1) <= 2*(1+2*self.__eps)/0.3:
             n+=1
             
@@ -109,8 +121,7 @@ class CFiSearch(CGSSearch):
             interval = b - a
 
             if n == 1:
-                print(self.__eps)
-                rho = 0.5 - 0.05
+                rho = 0.5 - self.__eps
                 x1 = a + rho * interval
                 x2 = a + ((1-rho) * interval)
                 # print(x1,x2)
